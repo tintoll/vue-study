@@ -17,8 +17,9 @@ const mutations = {
 
 const actions = {
   // 인자에 왜 {}를 사용할까?
+  // 원래 context가 넘어오는데 context.commit를 바로 사용할려고
   buyStock : ({commit}, order) => {
-    commit();
+    commit('BUY_STOCK', order);
   },
   initStock: ({ commit }) => {
     commit('SET_STOCKS',stocks);
