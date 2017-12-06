@@ -3,8 +3,8 @@
     <div class="panel panel-success">
       <div class="panel-heading">
         <h3 class="panel-title">
-            {{ stock.name }}
-            <small>(Price: {{ stock.price }} )</small>
+            {{ propStock.name }}
+            <small>(Price: {{ propStock.price }} )</small>
         </h3>
       </div>
       <div class="panel-body">
@@ -38,7 +38,7 @@
 
 <script>
   export default {
-    props : ['stock'], // 상위 컴포넌트에서 내려주는 Data
+    props : ['propStock'], // 상위 컴포넌트에서 내려주는 Data
 
     // 이 컴포넌트에서 사용할 Data
     data() {
@@ -50,8 +50,8 @@
     methods : {
       buyStock() {
         const order = {
-          stockId : this.stock.id,
-          stockPrice : this.stock.price,
+          stockId : this.propStock.id,
+          stockPrice : this.propStock.price,
           quantity : this.quantity,
         }
         console.log(order);
