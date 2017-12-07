@@ -10,6 +10,9 @@
           <router-link to="/portfolio" activeClass="active" tag="li"><a>Portfolio</a></router-link>
           <router-link to="/stocks" activeClass="active" tag="li"><a>Stocks</a></router-link>
         </ul>
+        <!-- Funds 요소 추가 Start main.js에 등록한 currency 필터 추가-->
+        <strong class="navbar-text navbar-right">Funds: {{ funds | currency }}</strong>
+        <!-- Funds 요소 추가 End -->
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#">End Day</a></li>
           <li class="dropdown">
@@ -32,6 +35,13 @@
 </template>
 
 <script>
+  export default {
+    computed : {
+      funds() {
+        return this.$store.getters.funds;
+      }
+    }
+  }
 </script>
 
 <style>
