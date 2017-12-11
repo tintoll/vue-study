@@ -13,6 +13,7 @@
                  class="form-control"
                  placeholder="Quantity"
                  v-model.number="quantity"
+                 :class="{danger: insufficientFunds}"
           />
           <!--
             v-model 데이터를 연결해주는 역할을 한다.
@@ -27,8 +28,8 @@
           <button
                   class="btn btn-success"
                   @click="buyStock"
-                  :disabled="quantity <= 0 || !Number.isInteger(quantity)"
-                  > Buy </button>
+                  :disabled="insufficientFunds || quantity <= 0 || !Number.isInteger(quantity)"
+                  > {{ insufficientFunds ? 'Too Much' : 'Buy'}} </button>
         </div>
       </div>
 
@@ -57,9 +58,24 @@
         this.$store.dispatch('buyStock', order);
         this.quantity = 0;
       }
+    },
+    computed : {
+      // 현재 나의 자산
+      funds() {
+        return this.$store.getters.funds;
+      },
+      // 나의 자산범위를 넘냐? 안넘야?
+      insufficientFunds() {
+        return this.quantity * this.propStock.price > this.funds;
+      }
     }
   }
 </script>
 
-<style>
+<!-- 현재 자신의 컴포넌트에서만 스타일을 사용할수 있다. -->
+<style scoped>
+.danger,
+.danger:focus {
+  border: 1px solid red;
+}
 </style>

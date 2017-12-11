@@ -13,6 +13,7 @@
                  class="form-control"
                  placeholder="Quantity"
                  v-model.number="quantity"
+                 :class="{danger: insufficientQuantity}"
           />
 
         </div>
@@ -20,8 +21,8 @@
           <button
                   class="btn btn-success"
                   @click="sellStock"
-                  :disabled="quantity <= 0 || !Number.isInteger(quantity)"
-                  > Sell </button>
+                  :disabled="insufficientQuantity || quantity <= 0 || !Number.isInteger(quantity)"
+                  > {{ insufficientQuantity ? 'Too Much' : 'Sell'}} </button>
         </div>
       </div>
 
@@ -58,10 +59,22 @@
         this.placeSellOrder(order);
         this.quantity = 0;
       }
+    },
+    computed : {
+      funds() {
+        return this.$store.getters.funds;
+      },
+      insufficientQuantity() {
+        return this.quantity > this.propStock.quantity;
+      }
     }
 
   }
 </script>
 
-<style>
+<style scoped>
+.danger,
+.danger:focus {
+  border: 1px solid red;
+}
 </style>
