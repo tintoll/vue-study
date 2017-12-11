@@ -39,6 +39,10 @@ const mutations = {
       // 아니면 목록에서 삭제 하여 준다.
       state.stocks.splice(state.stocks.indexOf(record), 1);
     }
+  },
+  'SET_PORTFOLIO'(state, portfolio) {
+    state.funds = portfolio.funds;
+    state.stocks = portfolio.stockPortfolio ? portfolio.stockPortfolio : [];
   }
 
 

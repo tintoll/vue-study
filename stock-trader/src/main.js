@@ -4,8 +4,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store/store';
+import VueResource from 'vue-resource';
 
 Vue.config.productionTip = false
+
+Vue.use(VueResource); // VueResource 사용등록
+Vue.http.options.root = ''; // Firebase DB 주소
+
 
 // 프로젝트 어디서나 사용할수 있는 전역 filter를 등록한다.
 Vue.filter('currency', value => {
