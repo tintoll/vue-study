@@ -1,53 +1,90 @@
+
+var API_PATH = 'http://localhost:8080/chat';
+
+
+var leftEventBus = new Vue();
+
 // 왼쪽 영역 컴포넌트들 
 var tabComponent = {
+  data: function () {
+    return {
+      selectedTabType: 'org',
+      tabs: [
+        { type: 'org', name: '조직' },
+        { type: 'community', name: '커뮤니티' },
+        { type: 'chat', name: '대화방' }
+      ]
+    }
+  },
   template: `
   <div class="tabs is-centered">
       <ul>
-          <li class="is-active">
-              <a>조직</a>
-          </li>
-          <li>
-              <a>커뮤니티</a>
-          </li>
-          <li>
-              <a>대화방</a>
+          <li v-for="tab in tabs" :class="(tab.type === selectedTabType) ? 'is-active' : '' ">
+              <a @click="selectTab(tab.type, $event)">{{tab.name}}</a>
           </li>
       </ul>
   </div>
-  `
+  `,
+  methods : {
+    selectTab : function(type, event) {
+      this.selectedTabType = type;
+      leftEventBus.$emit('tabClicked',type);
+    },
+  }
 }
 
 var tabContentListComponent = {
+  data : function() {
+    return {
+      items : []
+    }
+  },
   template: `
-    <div>
-      <ul style="">
-          <li style="padding: .30rem .60rem;">
-              <figure class="image is-32x32" style="display:inline-block;">
-                  <img style="border-radius:50%;" src="https://bulma.io/images/placeholders/128x128.png">
+    <div class="tab-list-area">
+      <ul>
+          <li v-for="item in items">
+              <figure class="image is-32x32">
+                  <img src="https://bulma.io/images/placeholders/128x128.png">
               </figure>
-              <p style="display: inline-block;vertical-align: top;height: 32px;font-size: 1.2rem;padding-top: 3px;width:80%;">타이거컴퍼니</p>
-          </li>
-          <li style="padding: .30rem .60rem;">
-              <figure class="image is-32x32" style="display:inline-block;">
-                  <img style="border-radius:50%;" src="https://bulma.io/images/placeholders/128x128.png">
-              </figure>
-              <p style="display: inline-block;vertical-align: top;height: 32px;font-size: 1.2rem;padding-top: 3px;width:80%;">티그리스사업부</p>
-          </li>
-          <li style="padding: .30rem .60rem;">
-              <figure class="image is-32x32" style="display:inline-block;">
-                  <img style="border-radius:50%;" src="https://bulma.io/images/placeholders/128x128.png">
-              </figure>
-              <p style="display: inline-block;vertical-align: top;height: 32px;font-size: 1.2rem;padding-top: 3px;width:80%;">TS팀</p>
-          </li>
-          <li style="padding: .30rem .60rem;">
-              <figure class="image is-32x32" style="display:inline-block;">
-                  <img style="border-radius:50%;" src="https://bulma.io/images/placeholders/128x128.png">
-              </figure>
-              <p style="display: inline-block;vertical-align: top;height: 32px;font-size: 1.2rem;padding-top: 3px;width:80%;">알앤디</p>
+              <p>{{item.communityName || item.groupName }}</p>
           </li>
       </ul>    
     </div>
-  `
+  `,
+  created : function() {
+    leftEventBus.$on('tabClicked', function(value){
+      this.getData(value);
+    }.bind(this)); // bind를 안해주면 this를 전역객체로 인식함. 
+  },
+  mounted : function() {
+    this.getData('org');
+  },
+  methods : {
+    getData: function (type) {
+      var _self = this; // 비동기 통신중에 콜백함수에서는 this가 변하기 때문에 
+      var apiUrl = API_PATH;
+      switch (type) {
+        case 'org':
+          apiUrl += '/fileCollect/orgCommunity/list?_tigris_sid=691567de0497011ee72238e7f1eca793';
+          break;
+        case 'community':
+          apiUrl += '/fileCollect/community/list?_tigris_sid=691567de0497011ee72238e7f1eca793';
+          break;  
+        case 'chat':
+          apiUrl += '/groups?_tigris_sid=691567de0497011ee72238e7f1eca793';
+          break;
+        default:
+          break;
+      }
+
+      Vue.http.get(apiUrl)
+        .then(function (response) {
+          return response.json();
+        }).then(function (jsonData) {
+          _self.items = jsonData.data;
+        });
+    }
+  }
 }
 
 var leftAreaComponent = {
