@@ -215,11 +215,10 @@ var centerAreaComponent = {
         isMine : false,
         page : 1,
         rowCount : 10
-      }
+      },
+      files : []
     }
   },
-
-
   template: `
   <div class="column is-9 center-area">
     <top-area-component 
@@ -229,6 +228,7 @@ var centerAreaComponent = {
         v-on:changeSortType="changeSortType" 
         :option="option"></top-area-component>
     <table-header-component></table-header-component>
+
     <table-body-component></table-body-component>
   </div>
   `,
@@ -237,21 +237,48 @@ var centerAreaComponent = {
     'tableHeaderComponent': tableHeaderComponent,
     'tableBodyComponent': tableBodyComponent,
   },
+  created : function() {
+    var _self = this;
+    leftEventBus.$on('tabItemClicked', function (tapItem, tapType) {
+      _self.tapItem = tapItem;
+      _self.tapType = tapType;
+      _self.getFiles(1);
+    });
+  },
   methods : {
     changeIsMine(){
       this.option.isMine = !this.option.isMine;
+      this.getFiles(1);
     },
     changeFileType(value) {
       this.option.fileType = value;
+      this.getFiles(1);
     },
     changeFilterType(value) {
       this.option.filterType = value;
+      this.getFiles(1);
     },
     changeSortType(value) {
       this.option.sortType = value;
+      this.getFiles(1);
     },
-    getFiles() {
-      
+    getFiles(page) {
+      this.page = page;
+      var _self = this;
+
+      var params = this.option;
+      var url = API_PATH;
+      if (this.tapType === 'chat') {
+        url += '/fileCollect/chat/' + this.tapItem.groupId +'/files?_tigris_sid=8552d0b1767f131e5914552cdff645e7';
+      }else {
+        url += '/fileCollect/community/' + this.tapItem.communityId + '/files?_tigris_sid=8552d0b1767f131e5914552cdff645e7';
+      }
+      Vue.http.get(url, { params : params})
+        .then(function (response) {
+          return response.json();
+        }).then(function (jsonData) {
+          _self.files = jsonData.data;
+        });
     }
   }
 }
