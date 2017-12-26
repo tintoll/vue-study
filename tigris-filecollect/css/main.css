@@ -70,3 +70,10 @@ h1.custom-header {
   border-bottom: 1px solid #e0e0e0;
   border-top: 1px solid #e0e0e0;
 }
+
+.center-area .title-area {
+  font-size:1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

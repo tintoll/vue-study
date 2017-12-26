@@ -21,7 +21,6 @@ var mainContentComponent = {
 
 // vue resource를 사용할수 있도록 등록해줘야함. 
 // Vue.use();
-
 var rootVm = new Vue({
   el : '#main',
   data : {
@@ -32,3 +31,4 @@ var rootVm = new Vue({
     'mainContent': mainContentComponent
   }
 });
+Vue.config.devtools = true;
