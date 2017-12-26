@@ -1,6 +1,4 @@
-
 var API_PATH = 'http://localhost:8080/chat';
-
 
 var leftEventBus = new Vue();
 
@@ -33,16 +31,17 @@ var tabComponent = {
   }
 }
 
-var tabContentListComponent = {
+var tabContentListComponent = { 
   data : function() {
     return {
-      items : []
+      items : [],
+      tapType : null
     }
   },
   template: `
     <div class="tab-list-area">
       <ul>
-          <li v-for="item in items">
+          <li @click="selectTabItem(item)" v-for="item in items">
               <figure class="image is-32x32">
                   <img src="https://bulma.io/images/placeholders/128x128.png">
               </figure>
@@ -60,9 +59,13 @@ var tabContentListComponent = {
     this.getData('org');
   },
   methods : {
+    selectTabItem : function(tapItem){
+      leftEventBus.$emit('tabItemClicked', tapItem, this.tapType);
+    },
     getData: function (type) {
       var _self = this; // 비동기 통신중에 콜백함수에서는 this가 변하기 때문에 
       var apiUrl = API_PATH;
+      _self.tapType = type;
       switch (type) {
         case 'org':
           apiUrl += '/fileCollect/orgCommunity/list?_tigris_sid=691567de0497011ee72238e7f1eca793';

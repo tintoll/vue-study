@@ -63,3 +63,10 @@ h1.custom-header {
 .left-area > .tab-list-area > ul li > figure > img {
   border-radius:50%;
 }
+
+
+.center-area > .center-table-header {
+  font-weight:bold;
+  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+}
