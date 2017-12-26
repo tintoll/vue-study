@@ -250,5 +250,8 @@ var centerAreaComponent = {
     changeSortType(value) {
       this.option.sortType = value;
     },
+    getFiles() {
+      
+    }
   }
 }
