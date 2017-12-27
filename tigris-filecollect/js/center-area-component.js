@@ -344,8 +344,8 @@ var centerAreaComponent = {
     });
 
     centerEventBus.$on('scroll', function () {
-      _self.page = _self.page + 1;
-      _self.getFiles(_self.page);
+      _self.option.page = _self.option.page + 1;
+      _self.getFiles(_self.option.page);
     });
   },
   methods : {
@@ -366,7 +366,7 @@ var centerAreaComponent = {
       this.getFiles(1);
     },
     getFiles(page) {
-      this.page = page;
+      this.option.page = page;
       var _self = this;
       if (!_self.tapType) {
         return ;
