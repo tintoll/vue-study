@@ -190,13 +190,13 @@ var tableBodyComponent = {
   ],
   data : function(){
     return {
-      fileIconUrl : null
+      selectedFileKey : {type: String}
     }
   },
   template: `
   <div class="field center-table-body">
     <ul @scroll="tableBodyUlScrollEvent">
-      <li class="columns" v-for="file in files" >
+      <li class="columns" v-for="file in files" @click="selectFile(file)" :class="isFileSelected(file) ? 'on':''" >
         <div class="column is-5 text-ellipsis">
           <img class="file-icon-image" :src="getFileIconUrl(file)" />      
           <span style="vertical-align:middle;">{{file.fileName}}</span>  
@@ -216,12 +216,23 @@ var tableBodyComponent = {
   </div>
   `,
   computed : {
-  
+    
   },
   created : function() {
     
   },
   methods : {
+    getFileKey: function (file) {
+      return file.fileId + '|' + file.fileSeq;;
+    },
+    selectFile: function (file) {
+      this.selectedFileKey = this.getFileKey(file);
+    },
+    isFileSelected: function (file) {
+      var result = false;
+      result = this.selectedFileKey === this.getFileKey(file);
+      return result;
+    },
     tableBodyUlScrollEvent(event) {
       var element = event.target;
       var maxHeight = element.scrollHeight;

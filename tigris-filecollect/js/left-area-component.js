@@ -36,12 +36,13 @@ var tabContentListComponent = {
     return {
       items : [],
       tapType : null,
+      selectedId : {type:String}
     }
   },
   template: `
     <div class="tab-list-area">
       <ul>
-          <li @click="selectTabItem(item)" v-for="item in items">
+          <li @click="selectTabItem(item)" v-for="item in items" :class="isTabItemSelected(item) ? 'on':''">
               <figure class="image is-32x32">
                   <img src="https://bulma.io/images/placeholders/128x128.png">
               </figure>
@@ -59,8 +60,22 @@ var tabContentListComponent = {
     this.getData('org');
   },
   methods : {
-    selectTabItem : function(tapItem){
-      leftEventBus.$emit('tabItemClicked', tapItem, this.tapType);
+    selectTabItem: function (tabItem){
+      if(this.tapType === 'chat'){
+        this.selectedId = tabItem.groupId;
+      } else {
+        this.selectedId = tabItem.communityId;
+      }
+      leftEventBus.$emit('tabItemClicked', tabItem, this.tapType);
+    },
+    isTabItemSelected : function(tabItem) {
+      var result = false;
+      if (this.tapType === 'chat') {
+        result = (this.selectedId === tabItem.groupId);
+      } else {
+        result = (this.selectedId === tabItem.communityId);
+      }
+      return result;
     },
     getData: function (type) {
       var _self = this; // 비동기 통신중에 콜백함수에서는 this가 변하기 때문에 

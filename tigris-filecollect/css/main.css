@@ -47,7 +47,7 @@ h1.custom-header {
   cursor: pointer;
 }
 .left-area > .tab-list-area > ul li.on {
-  background-color: ##e2e2e2;
+  background-color: #e2e2e2;
 }
 .left-area > .tab-list-area > ul li > p {
   display: inline-block;
@@ -86,10 +86,18 @@ h1.custom-header {
 .center-area > .center-table-body {
   height: 80%;
 }
-.center-area > .center-table-body > ul{
+.center-area > .center-table-body > ul {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.center-area > .center-table-body > ul li:hover {
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+.center-area > .center-table-body > ul li.on {
+  background-color: #e2e2e2;
 }
 
 .text-ellipsis {
