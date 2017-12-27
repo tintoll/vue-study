@@ -1,7 +1,7 @@
 
 var centerEventBus = new Vue();
-
-
+var GLB_CHAT_URL = 'http://localhost:8080/chat';
+var GLB_FILE_URL = 'http://localhost:8080/file';
 
 
 
@@ -179,7 +179,7 @@ var tableHeaderComponent = {
   <div class="columns center-table-header">
     <div class="column is-5">파일명</div>
     <div class="column is-2">소유자</div>
-    <div class="column is-2">날짜</div>
+    <div class="column is-3">날짜</div>
     <div class="column is-2">파일크기</div>
   </div>
   `
@@ -188,19 +188,38 @@ var tableBodyComponent = {
   props :[
     'files'
   ],
+  data : function(){
+    return {
+      fileIconUrl : null
+    }
+  },
   template: `
   <div class="field center-table-body">
     <ul @scroll="tableBodyUlScrollEvent">
-      <li class="columns" v-for="file in files">
-        <div class="column is-5">{{file.fileName}}</div>
-        <div class="column is-2">{{file.socialName}}</div>
-        <div class="column is-2">{{file.createDt}}</div>
-        <div class="column is-2">{{file.fileSize}}</div>
+      <li class="columns" v-for="file in files" >
+        <div class="column is-5 text-ellipsis">
+          <img class="file-icon-image" :src="getFileIconUrl(file)" />      
+          <span style="vertical-align:middle;">{{file.fileName}}</span>  
+        </div>
+        <div class="column is-2 text-ellipsis">
+          <img class="person-icon-image" :src="'http://localhost:8080/file/profile/'+file.socialId" />     
+          <span style="vertical-align:middle;">{{file.socialName}}</span>  
+        </div>
+        <div class="column is-3">
+          {{file.createDt | formatDate}}
+        </div>
+        <div class="column is-2">
+          {{file.fileSize | bytesToSize}}
+        </div>
       </li>
     </ul>
   </div>
   `,
+  computed : {
+  
+  },
   created : function() {
+    
   },
   methods : {
     tableBodyUlScrollEvent(event) {
@@ -210,7 +229,62 @@ var tableBodyComponent = {
       if (maxHeight <= currentScroll + 20) {
         centerEventBus.$emit('scroll');
       }
-
+    },
+  isImage(fileExt) {
+      var ext = fileExt.toLowerCase();
+      if (ext === 'jpg' || ext === 'jpeg'
+        || ext === 'gif' || ext === 'png' || ext === 'bmp') {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  getFileIconUrl(file) {
+      var fileIconUrl = '';
+      if (this.isImage(file.fileExt)) {
+        fileIconUrl = GLB_FILE_URL + '/image/' + file.fileId + '/' + file.fileSeq + '?thumbnail=400';
+      } else {
+        var ext = file.fileExt.toLowerCase();
+        switch (ext) {
+          case 'ppt':
+          case 'pptx':
+            fileIconUrl = GLB_CHAT_URL + '/static/images/icon/file_icon_ppt.png';
+            break;
+          case 'doc':
+          case 'docx':
+            fileIconUrl = GLB_CHAT_URL + '/static/images/icon/file_icon_doc.png';
+            break;
+          case 'xls':
+          case 'xlsx':
+            fileIconUrl = GLB_CHAT_URL + '/static/images/icon/file_icon_xls.png';
+            break;
+          case 'hwp':
+            fileIconUrl = GLB_CHAT_URL + '/static/images/icon/file_icon_hwp.png';
+            break;
+          case 'txt':
+            fileIconUrl = GLB_CHAT_URL + '/static/images/icon/file_icon_txt.png';
+            break;
+          case 'pdf':
+            fileIconUrl = GLB_CHAT_URL + '/static/images/icon/file_icon_pdf.png';
+            break;
+          default:
+            fileIconUrl = GLB_CHAT_URL + '/static/images/icon/file_icon_file.png';
+            break;
+        }
+      }
+      return fileIconUrl;
+    }
+  },
+  filters: {
+    bytesToSize : function(bytes) {
+      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+      if (bytes == 0) return 'n/a';
+      var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+      return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+    },
+    formatDate : function(createDt) {
+      var d = new Date(createDt);
+      return moment(d).format('YYYY-MM-DD h:mm:ss');
     }
   }
 }

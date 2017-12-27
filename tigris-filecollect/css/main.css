@@ -43,8 +43,11 @@ h1.custom-header {
   background-color: rgb(202, 241, 255);
 }
 .left-area > .tab-list-area > ul li:hover {
-  background-color: rgb(222, 244, 252);
+  background-color: #f3f3f3;
   cursor: pointer;
+}
+.left-area > .tab-list-area > ul li.on {
+  background-color: ##e2e2e2;
 }
 .left-area > .tab-list-area > ul li > p {
   display: inline-block;
@@ -87,4 +90,22 @@ h1.custom-header {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.center-area > .center-table-body .file-icon-image {
+  width:30px;
+  height:30px;
+  vertical-align:middle;
+  border-radius: 6px;
+}
+.center-area > .center-table-body .person-icon-image {
+  width:30px;
+  height:30px;
+  vertical-align:middle;
+  border-radius: 50%;
 }

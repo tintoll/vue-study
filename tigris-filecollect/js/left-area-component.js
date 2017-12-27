@@ -35,7 +35,7 @@ var tabContentListComponent = {
   data : function() {
     return {
       items : [],
-      tapType : null
+      tapType : null,
     }
   },
   template: `
