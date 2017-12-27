@@ -388,7 +388,7 @@ var centerAreaComponent = {
         .then(function (response) {
           return response.json();
         }).then(function (jsonData) {
-          if(_self.page === 1) {
+          if(_self.option.page === 1) {
             _self.files = jsonData.data;
           } else {
             _self.files = _self.files.concat(jsonData.data);
