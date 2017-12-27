@@ -1,5 +1,5 @@
 
-
+var centerEventBus = new Vue();
 
 
 
@@ -185,19 +185,33 @@ var tableHeaderComponent = {
   `
 }
 var tableBodyComponent = {
+  props :[
+    'files'
+  ],
   template: `
-  <div id="table-body" class="field">
-    <ul>
-      <li>
+  <div class="field center-table-body">
+    <ul @scroll="tableBodyUlScrollEvent">
+      <li class="columns" v-for="file in files">
+        <div class="column is-5">{{file.fileName}}</div>
+        <div class="column is-2">{{file.socialName}}</div>
+        <div class="column is-2">{{file.createDt}}</div>
+        <div class="column is-2">{{file.fileSize}}</div>
       </li>
     </ul>
   </div>
   `,
   created : function() {
-    // 조회 조건에 맞는 데이터를 가져와야합니다. 
-    leftEventBus.$on('tabItemClicked', function (tapItem, tapType) {
-      
-    });
+  },
+  methods : {
+    tableBodyUlScrollEvent(event) {
+      var element = event.target;
+      var maxHeight = element.scrollHeight;
+      var currentScroll = element.offsetHeight + element.scrollTop;
+      if (maxHeight <= currentScroll + 20) {
+        centerEventBus.$emit('scroll');
+      }
+
+    }
   }
 }
 
@@ -214,7 +228,7 @@ var centerAreaComponent = {
         fileType: 'ALL',
         isMine : false,
         page : 1,
-        rowCount : 10
+        rowCount : 20
       },
       files : []
     }
@@ -228,8 +242,7 @@ var centerAreaComponent = {
         v-on:changeSortType="changeSortType" 
         :option="option"></top-area-component>
     <table-header-component></table-header-component>
-
-    <table-body-component></table-body-component>
+    <table-body-component :files="files" ></table-body-component>
   </div>
   `,
   components : {
@@ -243,6 +256,11 @@ var centerAreaComponent = {
       _self.tapItem = tapItem;
       _self.tapType = tapType;
       _self.getFiles(1);
+    });
+
+    centerEventBus.$on('scroll', function () {
+      _self.page = _self.page + 1;
+      _self.getFiles(_self.page);
     });
   },
   methods : {
@@ -265,19 +283,31 @@ var centerAreaComponent = {
     getFiles(page) {
       this.page = page;
       var _self = this;
+      if (!_self.tapType) {
+        return ;
+      }
 
-      var params = this.option;
+      var params = Object.assign({}, this.option);
+      if(params.isMine) {
+        params.isMine = 'Y';
+      }else {
+        params.isMine = 'N';
+      }
       var url = API_PATH;
       if (this.tapType === 'chat') {
-        url += '/fileCollect/chat/' + this.tapItem.groupId +'/files?_tigris_sid=8552d0b1767f131e5914552cdff645e7';
-      }else {
-        url += '/fileCollect/community/' + this.tapItem.communityId + '/files?_tigris_sid=8552d0b1767f131e5914552cdff645e7';
+        url += '/fileCollect/chat/' + this.tapItem.groupId +'/files?_tigris_sid=55839585082649b03dd13213a26c9073';
+      } else {
+        url += '/fileCollect/community/' + this.tapItem.communityId + '/files?_tigris_sid=55839585082649b03dd13213a26c9073';
       }
       Vue.http.get(url, { params : params})
         .then(function (response) {
           return response.json();
         }).then(function (jsonData) {
-          _self.files = jsonData.data;
+          if(_self.page === 1) {
+            _self.files = jsonData.data;
+          } else {
+            _self.files = _self.files.concat(jsonData.data);
+          }
         });
     }
   }

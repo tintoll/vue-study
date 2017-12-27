@@ -29,11 +29,13 @@ h1.custom-header {
 }
 
 .left-area > .tab-list-area {
+  height: 80%;
+}
+.left-area > .tab-list-area > ul {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
-
 .left-area > .tab-list-area > ul li {
   padding: .30rem .60rem;
 }
@@ -76,4 +78,13 @@ h1.custom-header {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.center-area > .center-table-body {
+  height: 80%;
+}
+.center-area > .center-table-body > ul{
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
